@@ -1,0 +1,2 @@
+port: 3500
+base_url_path: "/api"
