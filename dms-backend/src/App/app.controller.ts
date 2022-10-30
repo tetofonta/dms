@@ -1,14 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { PersistenceService } from '../persistence/persistence.service';
 
-@Controller()
+@Controller('/test')
 export class AppController {
-  constructor(
-    private readonly appService: AppService
-  ) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+    @Get('no-auth')
+    async get_no_auth() {
+        return 'AAA';
+    }
 }

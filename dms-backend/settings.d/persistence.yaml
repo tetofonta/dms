@@ -1,0 +1,6 @@
+persistence_provider: LocalFSProvider
+provider_config:
+  foo: bar
+  mine:
+    yours: aaa
+    lolz: bbb

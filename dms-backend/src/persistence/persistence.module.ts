@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { PersistenceService } from './persistence.service';
 import { ConfigModule } from '../config/Config.module';
-import { AppController } from './app.controller';
 import { PluginModule } from '../plugin.module';
 
 @Module({
     imports: [ConfigModule, PluginModule.forRoot()],
-    controllers: [AppController],
-    providers: [],
+    providers: [PersistenceService],
+    exports: [PersistenceService],
 })
-export class AppModule {}
+export class PersistenceModule {}
