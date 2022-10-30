@@ -1,19 +1,40 @@
-import { Inject, Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-
+import { Injectable } from '@nestjs/common';
 import { StorageProvider } from '../../persistence/storage_provider';
-import { PersistenceConfig } from '../../config/schemas/persistence.config';
+import { Readable, Writable } from 'stream';
+import { Directory, FileOrDirectory, File } from '../../persistence/file';
 
 @Injectable()
 export class S3FSProvider implements StorageProvider {
-    constructor(private readonly config: PersistenceConfig) {}
-
-    readdir(...path: string[]): Promise<string[]> {
-        return new Promise((res, rej) => {
-            fs.readdir(path.join(...path), (err, files) => {
-                if (err) rej(err);
-                res(files);
-            });
-        });
+    delete(fod: FileOrDirectory): Promise<boolean> {
+        return Promise.resolve(false);
     }
+
+    existsDir(d: Directory): Promise<boolean> {
+        return Promise.resolve(false);
+    }
+
+    existsFile(f: File): Promise<boolean> {
+        return Promise.resolve(false);
+    }
+
+    list(d: Directory): Promise<FileOrDirectory[]> {
+        return Promise.resolve([]);
+    }
+
+    listDirs(d: Directory): Promise<Directory[]> {
+        return Promise.resolve([]);
+    }
+
+    listFiles(d: Directory): Promise<File[]> {
+        return Promise.resolve([]);
+    }
+
+    readStream(f: File): Promise<Readable> {
+        return Promise.resolve(undefined);
+    }
+
+    writeStream(f: File): Promise<Writable> {
+        return Promise.resolve(undefined);
+    }
+
 }

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { StorageProvider } from './persistence/storage_provider';
+import { ConfigurableStorageProvider } from './persistence/configurable_storage_provider';
 
 @Injectable()
 export class PluginService {
@@ -10,7 +10,7 @@ export class PluginService {
         private readonly module: ModuleRef,
     ) {}
 
-    public getStorageProvider(name: string): StorageProvider {
+    public getStorageProvider(name: string): ConfigurableStorageProvider<any> {
         if (!this.storage_providers[name])
             throw new Error(
                 `Cannot find storage provider ${name}. Available ones are ${Object.keys(
