@@ -1,0 +1,8 @@
+{
+  "name": "local-fs-storage-provider",
+  "version": "0.0.1",
+  "description": "LocalFS storage provider plugin",
+  "author": "Stefano Fontana",
+  "private": true,
+  "main": "plugin.js"
+}

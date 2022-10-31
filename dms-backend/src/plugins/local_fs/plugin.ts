@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '../../config/Config.module';
 import { StorageProviderClass } from '../../persistence/storage_provider';
 import { LocalFSProvider } from './local_fs.provider';
+import "./package.json"
 
 @Module({
     imports: [ConfigModule],

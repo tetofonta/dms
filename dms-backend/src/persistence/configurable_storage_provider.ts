@@ -5,6 +5,7 @@ import { validateSync } from 'nest-typed-config/dist/utils/imports.util';
 import { Logger, ValidationError } from '@nestjs/common';
 import { StorageProvider } from './storage_provider';
 import { Directory, FileOrDirectory, File } from './file';
+import { Printer } from 'prettier';
 
 export abstract class ConfigurableStorageProvider<T> implements StorageProvider{
     protected config: T
@@ -23,14 +24,12 @@ export abstract class ConfigurableStorageProvider<T> implements StorageProvider{
         }
     }
 
-    init(config: any){
+    async init(config: any): Promise<void>{
         this.config = new this.settings_class()
         Object.getOwnPropertyNames(config).forEach(e => {
-            if(this.config[e])
-                this.config[e] = config[e]
+            this.config[e] = config[e]
         })
         const errors = validateSync(this.config as object)
-
         if(errors.length > 0){
             this.logger.error(`Wrong configuration found for object persistence.provider_config`)
             this.logger.error("Following errors occured:")

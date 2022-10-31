@@ -1,3 +1,7 @@
-persistence_provider: LocalFSProvider
+persistence_provider: S3FSProvider
 provider_config:
-  storage_dir: "./storage"
+  endpoint: "http://minio:9000/"
+  access_key: "wcCmFVvkGKx3hALO"
+  secret_key: "xmNIG9Y24PhY58qcr2G5r1eBp6yKn67Q"
+  bucket: "dms-documents"
+  log_level: "info"

@@ -7,7 +7,6 @@ import { Logger } from '@nestjs/common';
     const app = await NestFactory.create(AppModule);
 
     const config: HttpConfig = app.get(HttpConfig);
-
     Logger.log(
         `Application starting, listening on http://${config.bind}${
             config.port !== 80 ? `:${config.port}` : ''

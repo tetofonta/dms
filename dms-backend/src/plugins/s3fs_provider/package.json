@@ -1,0 +1,12 @@
+{
+  "name": "s3-storage-provider",
+  "version": "0.0.1",
+  "description": "S3 storage provider plugin",
+  "author": "Stefano Fontana",
+  "private": true,
+  "main": "plugin.js",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.200.0",
+    "@aws-sdk/lib-storage": "^3.200.0"
+  }
+}

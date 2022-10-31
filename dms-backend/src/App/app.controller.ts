@@ -9,6 +9,10 @@ export class AppController {
 
     @Get('no-auth')
     async get_no_auth() {
-        return 'bbb';
+
+        // fs.createReadStream("./src/main.ts").pipe(await this.r.writeStream({name: "pippo", path: ["aa"]}));
+        // (await this.r.readStream({name: "ciao.ts", path: []})).pipe(process.stdout)
+
+        return 'ccc';
     }
 }

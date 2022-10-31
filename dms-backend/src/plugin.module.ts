@@ -2,6 +2,7 @@ import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { PluginService } from './plugin.service';
 import * as fs from 'fs';
 import * as path from 'path';
+import { exec, execSync } from 'child_process';
 
 @Module({})
 export class PluginModule {
@@ -10,20 +11,26 @@ export class PluginModule {
 
     static forRoot(): DynamicModule {
         if (this.instance === null) {
-            const plugins = fs.readdirSync(path.join(__dirname, 'plugins'));
+            const plugins = fs.readdirSync(path.resolve(__dirname, 'plugins'));
             const storage_providers = [];
             plugins.forEach((e) => {
-                if (
-                    fs.existsSync(
-                        path.join(__dirname, 'plugins', e, 'plugin.js'),
-                    )
-                ) {
-                    const descriptor = require(path.join(
-                        __dirname,
-                        'plugins',
-                        e,
-                        'plugin.js',
-                    ));
+                if (fs.existsSync(path.resolve(__dirname, 'plugins', e, 'package.json'))) {
+
+                    const pkg = require(path.resolve( __dirname, 'plugins', e, 'package.json'))
+                    if(!pkg.main){
+                        this.logger.warn(`No module entrypoint found. define package.json main property`)
+                        return
+                    }
+
+                    if(pkg.dependencies && (!fs.existsSync(path.resolve(__dirname, 'plugins', e, 'node_modules')) || pkg.force)){
+                        this.logger.warn(`Dependencies for plugin ${pkg.name} are not installed, running npm install`)
+                        execSync("npm install", {
+                            cwd: path.resolve(__dirname, 'plugins', e),
+                            stdio: ['ignore', process.stdout, process.stdout]
+                        })
+                    }
+
+                    const descriptor = require(path.resolve( __dirname, 'plugins', e, pkg.main));
                     const module_name = Object.keys(descriptor)[0];
                     if (!descriptor[module_name].type) {
                         this.logger.error(
@@ -43,6 +50,8 @@ export class PluginModule {
                             );
                             return;
                     }
+
+                    this.logger.log(`Loaded plugin ${pkg.name} v.${pkg.version}`)
                 }
             });
 

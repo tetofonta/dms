@@ -15,7 +15,8 @@ export class PersistenceService implements StorageProvider{
         private readonly config: PersistenceConfig,
     ) {
         this.provider = plugins.getStorageProvider(config.persistence_provider);
-        this.provider.init(config.provider_config);
+        if(this.provider instanceof ConfigurableStorageProvider)
+            this.provider.init(config.provider_config);
     }
 
     delete(fod: FileOrDirectory): Promise<boolean> {

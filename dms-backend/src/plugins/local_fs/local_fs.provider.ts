@@ -33,8 +33,8 @@ export class LocalFSProvider extends ConfigurableStorageProvider<LocalFSConfig> 
         return p
     }
 
-    init(config: any) {
-        super.init(config);
+    async init(config: any) {
+        await super.init(config);
         if(!fs.existsSync(this.config.storage_dir)){
             this.logger.warn(`Storage data dir not existing: creating ${this.config.storage_dir}`)
             fs.mkdirSync(this.config.storage_dir, {recursive: true})
@@ -88,6 +88,8 @@ export class LocalFSProvider extends ConfigurableStorageProvider<LocalFSConfig> 
     }
 
     async writeStream({name, path}: File): Promise<Writable> {
+        if(!await this.existsDir({path}))
+            fs.mkdirSync(this.get_full_path(undefined, ...path), {recursive: true})
         return fs.createWriteStream(this.get_full_path(name, ...path));
     }
 
