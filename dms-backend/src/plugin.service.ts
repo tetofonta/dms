@@ -7,6 +7,10 @@ export class PluginService {
     constructor(
         @Inject('storage_providers')
         private readonly storage_providers: { [k: string]: string },
+
+        @Inject('entities')
+        private readonly entities: any,
+
         private readonly module: ModuleRef,
     ) {}
 
@@ -18,5 +22,9 @@ export class PluginService {
                 ).join(', ')}`,
             );
         return this.module.get(this.storage_providers[name], { strict: false });
+    }
+
+    public getAdditionalEntities(){
+        return this.entities
     }
 }

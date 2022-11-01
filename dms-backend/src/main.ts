@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './App/app.module';
 import { HttpConfig } from './config/schemas/http.schema';
 import { Logger } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 (async function () {
     const app = await NestFactory.create(AppModule);
@@ -15,5 +16,6 @@ import { Logger } from '@nestjs/common';
     );
 
     app.setGlobalPrefix(config.base_url_path);
+    app.use(cookieParser());
     await app.listen(config.port, config.bind);
 })();

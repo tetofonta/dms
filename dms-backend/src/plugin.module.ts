@@ -3,6 +3,7 @@ import { PluginService } from './plugin.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import { exec, execSync } from 'child_process';
+import { StorageProviderClass } from './persistence/storage_provider';
 
 @Module({})
 export class PluginModule {
@@ -12,11 +13,15 @@ export class PluginModule {
     static forRoot(): DynamicModule {
         if (this.instance === null) {
             const plugins = fs.readdirSync(path.resolve(__dirname, 'plugins'));
-            const storage_providers = [];
+
+            const modules = []
+            const db_entities = []
+            const storage_providers: {[k: string]: StorageProviderClass} = {};
+
             plugins.forEach((e) => {
                 if (fs.existsSync(path.resolve(__dirname, 'plugins', e, 'package.json'))) {
-
                     const pkg = require(path.resolve( __dirname, 'plugins', e, 'package.json'))
+
                     if(!pkg.main){
                         this.logger.warn(`No module entrypoint found. define package.json main property`)
                         return
@@ -39,10 +44,20 @@ export class PluginModule {
                         return;
                     }
 
+                    if(pkg.entities && Array.isArray(pkg.entities)){
+                        pkg.entities.forEach(ent => {
+                            db_entities.push(require(path.resolve(__dirname, 'plugins', e, ent)).default)
+                        })
+                    }
+
                     const module = descriptor[module_name];
                     switch (module.type) {
                         case 'storage_provider':
-                            storage_providers.push(module);
+                            modules.push(module);
+                            storage_providers[module.provider.name] = module.provider
+                            break;
+                        case 'std_module':
+                            modules.push(module)
                             break;
                         default:
                             this.logger.error(
@@ -50,24 +65,21 @@ export class PluginModule {
                             );
                             return;
                     }
-
                     this.logger.log(`Loaded plugin ${pkg.name} v.${pkg.version}`)
                 }
             });
 
             this.instance = {
                 module: PluginModule,
-                imports: storage_providers,
+                imports: modules,
                 providers: [
                     {
                         provide: 'storage_providers',
-                        useValue: storage_providers.reduce(
-                            (o, p) =>
-                                Object.assign(o, {
-                                    [p.provider.name]: p.provider,
-                                }),
-                            {},
-                        ),
+                        useValue: storage_providers
+                    },
+                    {
+                        provide: 'entities',
+                        useValue: db_entities
                     },
                     PluginService,
                 ],

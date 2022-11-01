@@ -9,6 +9,7 @@ export class AppController {
 
     @Get('no-auth')
     async get_no_auth() {
+        this.r.delete({path: ['aa']})
         return 'ccc';
     }
 }

@@ -1,0 +1,14 @@
+{
+  "name": "local-auth",
+  "version": "0.0.1",
+  "description": "LocalFS storage provider plugin",
+  "author": "Stefano Fontana",
+  "private": true,
+  "main": "plugin.js",
+  "entities": ["entities/user_local_data.js"],
+  "configs": "config/local_auth.config.ts",
+  "dependencies": {
+    "argon2": "^0.30.1",
+    "zxcvbn": "^4.4.2"
+  }
+}

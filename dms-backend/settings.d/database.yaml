@@ -1,0 +1,5 @@
+host: postgres
+port: 5432
+user: postgres
+database: dms
+password: Qwerty1!

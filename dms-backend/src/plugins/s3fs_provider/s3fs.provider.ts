@@ -36,11 +36,17 @@ export class S3FSProvider extends ConfigurableStorageProvider<S3FSConfig> {
     }
 
     async delete(fod: FileOrDirectory): Promise<boolean> {
-        // console.log(await this.client.listObjectsV2({
-        //     Bucket: this.config.bucket,
-        //     Prefix: fod.path.join("/")
-        // }))
-        return Promise.resolve(false);
+        if('name' in fod)
+            this.logger.log(await this.client.deleteObject({
+                Bucket: this.config.bucket,
+                Key: this.get_object_full_name(fod)
+            }))
+        else{
+            const to_delete = await this.list(fod)
+            await Promise.all(to_delete.map(e => this.delete(e)))
+        }
+
+        return true;
     }
 
     async existsDir(d: Directory): Promise<boolean> {

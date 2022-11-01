@@ -1,0 +1,5 @@
+secret_key: ciaociao124
+expiry: 7200
+
+jwt_header: "Auth"
+jwt_cookie: "Auth"
