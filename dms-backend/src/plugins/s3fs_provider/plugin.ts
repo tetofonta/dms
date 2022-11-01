@@ -3,6 +3,7 @@ import { ConfigModule } from '../../config/Config.module';
 import { S3FSProvider } from './s3fs.provider';
 import { StorageProviderClass } from '../../persistence/storage_provider';
 import "./package.json"
+import "./package-lock.json"
 
 @Module({
     imports: [ConfigModule],

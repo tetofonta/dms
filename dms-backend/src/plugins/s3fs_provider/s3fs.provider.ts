@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import * as stream from 'stream';
 import { Readable, Writable } from 'stream';
-import { Directory, FileOrDirectory, File } from '../../persistence/file';
+import { Directory, File, FileOrDirectory } from '../../persistence/file';
 import { ConfigurableStorageProvider } from '../../persistence/configurable_storage_provider';
 import S3FSConfig from './s3.config';
-import * as stream from 'stream';
 import * as path from 'path';
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
@@ -43,24 +43,42 @@ export class S3FSProvider extends ConfigurableStorageProvider<S3FSConfig> {
         return Promise.resolve(false);
     }
 
-    existsDir(d: Directory): Promise<boolean> {
-        return Promise.resolve(false);
+    async existsDir(d: Directory): Promise<boolean> {
+        return (await this.list(d)).length > 0;
     }
 
-    existsFile(f: File): Promise<boolean> {
-        return Promise.resolve(false);
+    async existsFile(f: File): Promise<boolean> {
+        const my_f = {path: f.path}
+        return (await this.list(my_f)).some(e => 'name' in e && e.name === f.name);
     }
 
-    list(d: Directory): Promise<FileOrDirectory[]> {
-        return Promise.resolve([]);
+    async list(d: Directory): Promise<FileOrDirectory[]> {
+        const list = await this.client.listObjectsV2({
+            Bucket: this.config.bucket,
+            Prefix: this.get_object_full_name(d) + (d.path.length > 0 ? "/" : ""),
+            Delimiter: "/"
+        })
+        const common_prefixes = list.CommonPrefixes ? list.CommonPrefixes.map(e => this.reference_from_string(e.Prefix)) : []
+        const contents = list.Contents ? list.Contents.map(e => this.reference_from_string(e.Key)) : []
+        return [...common_prefixes, ...contents];
     }
 
-    listDirs(d: Directory): Promise<Directory[]> {
-        return Promise.resolve([]);
+    async listDirs(d: Directory): Promise<Directory[]> {
+        const list = await this.client.listObjectsV2({
+            Bucket: this.config.bucket,
+            Prefix: this.get_object_full_name(d) + "/",
+            Delimiter: "/"
+        })
+        return list.CommonPrefixes ? list.CommonPrefixes.map(e => this.reference_from_string(e.Prefix)) : [];
     }
 
-    listFiles(d: Directory): Promise<File[]> {
-        return Promise.resolve([]);
+    async listFiles(d: Directory): Promise<File[]> {
+        const list = await this.client.listObjectsV2({
+            Bucket: this.config.bucket,
+            Prefix: this.get_object_full_name(d) + "/",
+            Delimiter: "/"
+        })
+        return list.Contents ? list.Contents.map(e => this.reference_from_string(e.Key) as File) : [];
     }
 
     async readStream(f: File): Promise<Readable> {
@@ -96,5 +114,12 @@ export class S3FSProvider extends ConfigurableStorageProvider<S3FSConfig> {
         if('name' in f)
             pth = [...f.path, f.name]
         return path.resolve('/', ...pth);
+    }
+
+    private reference_from_string(pth: string): FileOrDirectory{
+        const arr = pth.split('/')
+        if(pth.endsWith('/'))
+            return {path: arr.slice(0, arr.length - 1)}
+        return {name: arr.pop(), path: arr}
     }
 }
