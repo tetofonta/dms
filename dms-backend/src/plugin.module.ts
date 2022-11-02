@@ -10,12 +10,24 @@ export class PluginModule {
     private static logger = new Logger('PluginLoader');
     private static instance: DynamicModule | null = null;
 
+    private static install_plugin_dependencies(pkg_name: string, pkg){
+        if(pkg.dependencies && (!fs.existsSync(path.resolve(__dirname, 'plugins', pkg_name, 'node_modules')) || pkg.force)){
+            this.logger.warn(`Dependencies for plugin ${pkg.name} are not installed, running npm install`)
+            execSync("npm install", {
+                cwd: path.resolve(__dirname, 'plugins', pkg_name),
+                stdio: ['ignore', process.stdout, process.stdout]
+            })
+        }
+    }
+
+    private static modules: DynamicModule[] = []
+
     static forRoot(): DynamicModule {
         if (this.instance === null) {
             const plugins = fs.readdirSync(path.resolve(__dirname, 'plugins'));
 
-            const modules = []
             const db_entities = []
+
             const storage_providers: {[k: string]: StorageProviderClass} = {};
 
             plugins.forEach((e) => {
@@ -27,14 +39,7 @@ export class PluginModule {
                         return
                     }
 
-                    if(pkg.dependencies && (!fs.existsSync(path.resolve(__dirname, 'plugins', e, 'node_modules')) || pkg.force)){
-                        this.logger.warn(`Dependencies for plugin ${pkg.name} are not installed, running npm install`)
-                        execSync("npm install", {
-                            cwd: path.resolve(__dirname, 'plugins', e),
-                            stdio: ['ignore', process.stdout, process.stdout]
-                        })
-                    }
-
+                    this.install_plugin_dependencies(e, pkg)
                     const descriptor = require(path.resolve( __dirname, 'plugins', e, pkg.main));
                     const module_name = Object.keys(descriptor)[0];
                     if (!descriptor[module_name].type) {
@@ -53,11 +58,11 @@ export class PluginModule {
                     const module = descriptor[module_name];
                     switch (module.type) {
                         case 'storage_provider':
-                            modules.push(module);
+                            this.modules.push(module);
                             storage_providers[module.provider.name] = module.provider
                             break;
                         case 'std_module':
-                            modules.push(module)
+                            this.modules.push(module)
                             break;
                         default:
                             this.logger.error(
@@ -71,7 +76,6 @@ export class PluginModule {
 
             this.instance = {
                 module: PluginModule,
-                imports: modules,
                 providers: [
                     {
                         provide: 'storage_providers',
@@ -88,5 +92,12 @@ export class PluginModule {
         }
 
         return this.instance;
+    }
+
+    static loadPluginModules(): DynamicModule {
+        return {
+            module: PluginModule,
+            imports: this.modules
+        }
     }
 }

@@ -11,6 +11,7 @@ services:
       - 3500:3500
     volumes:
       - ./dms-backend/settings.d:/etc/dms.d
+      - ./dms-backend/settings:/etc/dms
       - ./dms-backend/src:/dms/src
       - ./dms-backend/package.json:/dms/package.json
       - ./dms-backend/package-lock.json:/dms/package-lock.json

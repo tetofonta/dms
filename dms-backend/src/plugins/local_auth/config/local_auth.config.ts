@@ -1,6 +1,6 @@
 import { IsDefined, IsPositive } from 'class-validator';
 
-export default class LocalAuthConfig{
+export class LocalAuthConfig{
 
     @IsDefined()
     @IsPositive()

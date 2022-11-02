@@ -8,11 +8,14 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [
-        ConfigModule,
         PluginModule.forRoot(),
+
+        ConfigModule,
         PersistenceModule,
         DatabaseModule,
-        AuthModule
+        AuthModule,
+
+        PluginModule.loadPluginModules()
     ],
     controllers: [AppController],
     providers: [],
