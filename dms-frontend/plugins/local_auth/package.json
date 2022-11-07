@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:prod": "node scripts/build.js"
+    "build:prod": "node scripts/build.js",
+    "build:dev": "node scripts/build.js development"
   },
   "dependencies": {
 

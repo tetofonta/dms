@@ -1,5 +1,5 @@
-process.env.BABEL_ENV = 'production';
-process.env.NODE_ENV = 'production';
+process.env.BABEL_ENV = process.argv[2] || "production";
+process.env.NODE_ENV = process.argv[2] || "production";
 
 process.on('unhandledRejection', err => {
   throw err;
@@ -17,7 +17,7 @@ const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
 const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 const isInteractive = process.stdout.isTTY;
-const config = configFactory('production');
+const config = configFactory( process.argv[2] || "production");
 const { checkBrowsers } = require('react-dev-utils/browsersHelper');
 
 

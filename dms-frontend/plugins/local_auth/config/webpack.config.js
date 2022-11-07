@@ -212,9 +212,9 @@ module.exports = function (webpackEnv) {
       libraryExport: "default",
     },
     externals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-      "react-admin": require('react-admin')
+      react: "React",
+      'react-dom': "ReactDOM",
+      "react-admin": require('react-admin'),
     },
     cache: {
       type: 'filesystem',
