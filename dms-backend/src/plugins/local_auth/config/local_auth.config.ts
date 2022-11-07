@@ -1,4 +1,4 @@
-import { IsDefined, IsPositive } from 'class-validator';
+import { IsDefined, IsPositive, IsBoolean, IsString } from 'class-validator';
 
 export class LocalAuthConfig{
 

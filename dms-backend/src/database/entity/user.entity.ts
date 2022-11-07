@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, JoinTable, ManyToMany } from 'typeorm';
-import { Group } from './group.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class User{
@@ -7,10 +7,10 @@ export class User{
     @PrimaryGeneratedColumn("uuid")
     public id: string
 
-    @Column()
+    @Column({unique: true})
     public username: string
 
-    @ManyToMany(type => Group, group => group.id, {cascade: true})
+    @ManyToMany(type => Role, role => role.id, {cascade: true})
     @JoinTable()
-    public groups: Group[]
+    public roles: Role[]
 }

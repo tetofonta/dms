@@ -1,21 +1,25 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from './user.decoraor.ta';
+import { ReqUser } from './user.decorator';
+import { User } from '../database/entity/user.entity';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller("auth")
 export class AuthController{
 
-    constructor(private readonly authService: AuthService){
-
-    }
+    constructor(private readonly authService: AuthService){}
 
     @Get("/token/")
     async get_token(
-        @User() user
+        @Req() req,
+        @ReqUser() user: User
     ){
-        return user
+        return {
+            user_id: user.id,
+            username: user.username,
+            roles: user.roles.map(e => e.id)
+        }
     }
 
 }

@@ -2,7 +2,7 @@ import { Entity, JoinTable, ManyToMany, ManyToOne, PrimaryColumn } from 'typeorm
 import { User } from './user.entity';
 
 @Entity()
-export class Group{
+export class Role {
 
     @PrimaryColumn()
     public id: string

@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { AuthConfig } from '../config/schemas/auth.schema';
 
 @Injectable()
-export class JWTStrategy extends PassportStrategy(Strategy) {
+export class JWTStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     constructor(
         private readonly authService: AuthService,
@@ -15,11 +15,12 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
     ) {
         super({
             jwtFromRequest: (req: Request) => {
-                if(req[this.config.jwt_cookie])
-                    return req.headers[this.config.jwt_header]
+                if(req.cookies[this.config.jwt_cookie])
+                    return req.cookies[this.config.jwt_header]
                 return req.headers[this.config.jwt_header] || null
             },
             secretOrKey: config.secret_key,
+            issuer: config.issuer
         });
     }
 

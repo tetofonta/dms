@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../../database/entity/user.entity';
 
 @Entity()
@@ -8,7 +8,7 @@ export class UserLocalAuthData{
     public id: number
 
     @OneToOne(() => User)
-    @JoinTable()
+    @JoinColumn()
     public user: User
 
     @Column()

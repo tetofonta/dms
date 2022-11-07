@@ -5,7 +5,8 @@ import { ConfigModule } from '../config/Config.module';
 import { DatabaseConfig } from '../config/schemas/database.schema';
 import { PluginService } from '../plugin.service';
 import { User } from './entity/user.entity';
-import { Group } from './entity/group.entity';
+import { Role } from './entity/role.entity';
+import { createDatabase } from 'typeorm-extension';
 
 @Module({
     imports: [
@@ -22,8 +23,17 @@ import { Group } from './entity/group.entity';
                     port: config.port,
                     database: config.database,
                     synchronize: true,
-                    entities: [User, Group, ...plugins.getAdditionalEntities()]
+                    //dropSchema: true,
+                    entities: [User, Role, ...plugins.getAdditionalEntities()],
+                    // logging: ["query"]
                 }
+
+                // await createDatabase({
+                //     options: connection_options,
+                //     ifNotExist: true,
+                //     synchronize: true
+                // })
+
                 return connection_options
             }
         })

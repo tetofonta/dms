@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../database/entity/user.entity';
-import { Group } from '../database/entity/group.entity';
+import { Role } from '../database/entity/role.entity';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -13,7 +13,7 @@ import { JWTStrategy } from './jwt.strategy';
 @Module({
 
     imports: [
-        TypeOrmModule.forFeature([User, Group]),
+        TypeOrmModule.forFeature([User, Role]),
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
@@ -33,7 +33,8 @@ import { JWTStrategy } from './jwt.strategy';
         AuthService,
         JWTStrategy
     ],
-    controllers: [AuthController]
+    controllers: [AuthController],
+    exports: [AuthService]
 
 })
 export class AuthModule{}
