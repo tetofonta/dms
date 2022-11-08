@@ -1,9 +1,10 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, Res, Response, UseGuards } from '@nestjs/common';
 import { LocalAuthService } from './local_auth.service';
 import { ReqUser } from '../../auth/user.decorator';
 import { User } from '../../database/entity/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../../auth/auth.service';
+import express from "express"
 
 @Controller("/auth/local")
 export class LocalAuthController{
@@ -26,10 +27,14 @@ export class LocalAuthController{
   @Post("/login")
   @UseGuards(AuthGuard('localauth'))
   async user_login(
-    @ReqUser() user: User
+    @ReqUser() user: User,
+    @Response() res: express.Response
   ){
-    await this.authService.login(user)
-    return user
+    const token = await this.authService.login(user, res)
+    res.json({
+      user,
+      token
+    })
   }
 
   // @Patch("/setup")

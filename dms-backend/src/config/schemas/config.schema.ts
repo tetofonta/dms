@@ -4,6 +4,7 @@ import { HttpConfig } from './http.schema';
 import { PersistenceConfig } from './persistence.config';
 import { DatabaseConfig } from './database.schema';
 import { AuthConfig } from './auth.schema';
+import { PluginConfig } from './plugin.config';
 
 export class RootConfig {
     @IsDefined()
@@ -21,4 +22,8 @@ export class RootConfig {
     @IsDefined()
     @Type(() => AuthConfig)
     public readonly auth!: AuthConfig;
+
+    @IsDefined()
+    @Type(() => PluginConfig)
+    public readonly plugins!: PluginConfig;
 }

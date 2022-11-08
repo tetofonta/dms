@@ -56,7 +56,7 @@ export class LocalAuthService{
             where: {user: {username}},
             relations: {user: { roles: true }}
         })
-        if(!user) return false
+        if(!user) return undefined
         if (await argon2.verify(user.password, password))
             return user.user
         return undefined

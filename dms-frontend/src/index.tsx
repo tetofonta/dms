@@ -2,10 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App/App';
 import reportWebVitals from './reportWebVitals';
+import * as Emotion from '@emotion/react'
+import * as Admin from "react-admin"
 
-window.React = React
+import "./index.sass"
+
+window["React"] = React
 // @ts-ignore
-window.ReactDOM = ReactDOM
+window["ReactDOM"] = ReactDOM
+// @ts-ignore
+window["Emotion"] = Emotion
+// @ts-ignore
+window["Admin"] = Admin
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

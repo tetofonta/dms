@@ -24,4 +24,16 @@ plugins.forEach(plugin => {
     path.join(__dirname, "build", plugin),
     {recursive: true}
   )
+
+  const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, plugin, "package.json"), {encoding: "utf8"}))
+  const assets = JSON.parse(fs.readFileSync(path.join(__dirname, plugin, "build", "asset-manifest.json"), {encoding: "utf8"}))
+
+  fs.writeFileSync(path.join(__dirname, "build", plugin, "plugin.json"), JSON.stringify({
+    name: pkg.name,
+    version: pkg.version,
+    plugin: {
+      family: pkg.plugin.family,
+      entrypoints: assets.entrypoints
+    }
+  }))
 })

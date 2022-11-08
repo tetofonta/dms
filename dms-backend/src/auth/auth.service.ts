@@ -35,11 +35,13 @@ export class AuthService{
         return this.userRepository.findOne({where: {username}, relations: {roles: true}})
     }
 
-    async login(user: User): Promise<string>{
-        return this.jwtService.sign({
+    async login(user: User, res: any): Promise<string>{
+        const token = this.jwtService.sign({
             id: user.id,
             username: user.username,
             roles: user.roles.map((e) => e.id)
         })
+        res.cookie(this.config.jwt_cookie, token)
+        return token
     }
 }

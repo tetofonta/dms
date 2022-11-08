@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { exec, execSync } from 'child_process';
 import { StorageProviderClass } from './persistence/storage_provider';
+import { ConfigModule } from './config/Config.module';
+import { PluginController } from './plugin.controller';
 
 @Module({})
 export class PluginModule {
@@ -87,6 +89,8 @@ export class PluginModule {
                     },
                     PluginService,
                 ],
+                imports: [ConfigModule],
+                controllers: [PluginController],
                 exports: [PluginService],
             };
         }

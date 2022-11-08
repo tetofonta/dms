@@ -1,6 +1,9 @@
 {
   "name": "local_auth",
   "version": "0.1.0",
+  "plugin": {
+    "family": "auth"
+  },
   "private": true,
   "scripts": {
     "build:prod": "node scripts/build.js",

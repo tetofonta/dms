@@ -214,7 +214,8 @@ module.exports = function (webpackEnv) {
     externals: {
       react: "React",
       'react-dom': "ReactDOM",
-      "react-admin": require('react-admin'),
+      "@emotion/react": "Emotion",
+      "react-admin": "Admin"
     },
     cache: {
       type: 'filesystem',

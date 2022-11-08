@@ -15,6 +15,7 @@ services:
       - ./dms-backend/src:/dms/src
       - ./dms-backend/package.json:/dms/package.json
       - ./dms-backend/package-lock.json:/dms/package-lock.json
+      - ./dms-frontend/plugins/build:/www/plugins/
 
   minio:
     image: quay.io/minio/minio
